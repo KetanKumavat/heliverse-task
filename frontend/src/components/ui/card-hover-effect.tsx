@@ -88,7 +88,7 @@ export const HoverEffect = ({ className }: { className?: string }) => {
       </div>
       <div
         className={cn(
-          "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+          "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-6 ",
           className
         )}>
         {currentUsers.map(
@@ -104,7 +104,7 @@ export const HoverEffect = ({ className }: { className?: string }) => {
               <AnimatePresence>
                 {hoveredIndex === idx && (
                   <motion.span
-                    className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-white/75 block rounded-3xl"
+                    className="absolute inset-0 h-full w-full bg-white/75 dark:bg-white/75 block rounded-3xl"
                     layoutId="hoverBackground"
                     initial={{ opacity: 0 }}
                     animate={{
