@@ -1,20 +1,27 @@
-import { cn } from "../../utils/cn";
+import { cn } from "../../src/utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import userData from "../../../public/users.json";
+import userData from "../../public/users.json";
 import { useNavigate } from "react-router-dom";
 
-export const HoverEffect = ({ className }: { className?: string }) => {
-  let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+export const TeamCreation = ({
+  className,
+  setShowMenu,
+}: {
+  className?: string;
+  setShowMenu: (value: boolean) => void;
+}) => {
+  const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const usersPerPage = 20;
   const [searchTerm, setSearchTerm] = useState("");
+
   const [filters, setFilters] = useState({
     domain: "",
     gender: "",
     availability: "",
   });
-
   const navigate = useNavigate();
 
   const indexOfLastUser = currentPage * usersPerPage;
@@ -48,9 +55,29 @@ export const HoverEffect = ({ className }: { className?: string }) => {
     setFilters({ ...filters, [filterType]: value });
   };
 
+  const handleUserSelect = (userId: string) => {
+    if (selectedUsers.includes(userId)) {
+      setSelectedUsers(selectedUsers.filter((id) => id !== userId));
+    } else {
+      setSelectedUsers([...selectedUsers, userId]);
+    }
+  };
+
+  const handleCreateTeam = () => {
+    // Logic to create team with selected users
+    console.log("Selected Users:", selectedUsers);
+    // Reset selectedUsers array for next team creation
+    setSelectedUsers([]);
+    setShowMenu(true);
+  };
+
+  const handleRemoveUser = (userId: string) => {
+    setSelectedUsers(selectedUsers.filter((id) => id !== userId));
+  };
+
   return (
     <div className={cn("py-10", className)}>
-      <div className="flex flex-wrap justify-center gap-4 mb-4 ">
+      <div className="flex flex-wrap justify-center gap-4 mb-4 z-0">
         <input
           type="text"
           placeholder="Search User"
@@ -81,7 +108,7 @@ export const HoverEffect = ({ className }: { className?: string }) => {
         </select>
         <select
           value={filters.availability}
-          onChange={(e) => handleFilterChange("available", e.target.value)}
+          onChange={(e) => handleFilterChange("availability", e.target.value)}
           className="border-2 px-3 p-2 rounded-md bg-black text-white placeholder-white">
           <option value="">Availabilities</option>
           <option value="">All</option>
@@ -90,10 +117,16 @@ export const HoverEffect = ({ className }: { className?: string }) => {
         </select>
         <button
           className="flex justify-center p-4 rounded-full text-white font-semibold bg-black px-4"
-          onClick={() => {
-            navigate("/create-team");
-          }}>
+          onClick={handleCreateTeam}
+          disabled={selectedUsers.length === 0}>
           Create Team
+        </button>
+        <button
+          className="flex justify-center p-4 rounded-full text-white font-semibold bg-black px-9"
+          onClick={() => {
+            navigate("/");
+          }}>
+          Home
         </button>
       </div>
       <div
@@ -101,49 +134,96 @@ export const HoverEffect = ({ className }: { className?: string }) => {
           "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-6 ",
           className
         )}>
-        {currentUsers.map(
-          (
-            user,
-            idx // Map over your user data instead of items
-          ) => (
-            <div
-              key={user.id}
-              className="relative group block p-2 h-full w-full"
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}>
-              <AnimatePresence>
-                {hoveredIndex === idx && (
-                  <motion.span
-                    className="absolute inset-0 h-full w-full bg-white/75 dark:bg-white/75 block rounded-3xl"
-                    layoutId="hoverBackground"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { duration: 0.15 },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      transition: { duration: 0.15, delay: 0.2 },
-                    }}
-                  />
-                )}
-              </AnimatePresence>
-              <Card user={user}>
-                <CardTitle>
-                  {user.first_name} {user.last_name}
-                </CardTitle>
-                <CardDescription>{user.email}</CardDescription>
-              </Card>
-            </div>
-          )
-        )}
+        {currentUsers.map((user, idx) => (
+          <div
+            key={user.id}
+            className="relative group block p-2 h-full w-full"
+            onMouseEnter={() => setHoveredIndex(idx)}
+            onMouseLeave={() => setHoveredIndex(null)}>
+            <AnimatePresence>
+              {hoveredIndex === idx && (
+                <motion.span
+                  className="absolute inset-0 h-full w-full bg-white/75 dark:bg-white/75 block rounded-3xl"
+                  layoutId="hoverBackground"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: { duration: 0.15 },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: 0.15, delay: 0.2 },
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            <Card
+              user={user}
+              onSelect={handleUserSelect}
+              isSelected={selectedUsers.includes(user.id)}
+            />
+          </div>
+        ))}
+        <SelectedUsersMenu
+          selectedUsers={selectedUsers}
+          setShowMenu={setShowMenu}
+        />
       </div>
-
       <Pagination
         totalPages={totalPages}
         currentPage={currentPage}
         paginate={paginate}
       />
+    </div>
+  );
+};
+
+export const SelectedUsersMenu = ({
+  selectedUsers,
+  setShowMenu,
+}: {
+  selectedUsers: string[];
+  setShowMenu: (value: boolean) => void;
+}) => {
+  return (
+    <div className="relative inline-block text-left ">
+      <div>
+        <button
+          type="button"
+          className="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-100"
+          id="options-menu"
+          aria-expanded="true"
+          aria-haspopup="true"
+          onClick={() => setShowMenu(true)}>
+          Show Selected Users
+        </button>
+      </div>
+
+      {selectedUsers.length > 0 && (
+        <div
+          className="origin-top-right right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
+          role="menu"
+          aria-orientation="vertical"
+          aria-labelledby="options-menu">
+          <div className="py-1" role="none">
+            {selectedUsers.map((userId) => {
+              const user = userData.find((u) => u.id === userId);
+              if (!user) {
+                return (
+                  <div key={userId} className="px-4 py-2 text-gray-700">
+                    User with ID {userId} not found.
+                  </div>
+                );
+              }
+              return (
+                <div key={user.id} className="px-4 py-2 text-gray-700">
+                  {user.first_name} {user.last_name} - {user.email}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -195,10 +275,7 @@ export const Pagination = ({
         disabled={currentPage === firstPage}>
         Previous
       </button>
-      <ul className="flex">
-        {renderPageNumbers}
-        {currentPage + showPages < totalPages}
-      </ul>
+      <ul className="flex">{renderPageNumbers}</ul>
       <button
         className={`${
           currentPage === lastPage ? "opacity-50 cursor-not-allowed" : ""
@@ -214,6 +291,7 @@ export const Pagination = ({
 export const Card = ({
   className,
   user,
+  onSelect,
 }: {
   className?: string;
   user: {
@@ -225,15 +303,17 @@ export const Card = ({
     gender: string;
     domain: string;
   };
+  onSelect: (userId: string) => void;
 }) => {
   return (
     <div
       className={cn(
-        "rounded-2xl h-full w-full p-4 overflow-hidden gap-2 bg-zinc-950 border-transparent dark:border-white border-2 group-hover:border-slate-700 relative z-20"
+        "rounded-2xl h-full w-full p-4 overflow-hidden gap-2 bg-zinc-950 border-transparent dark:border-white border-2 group-hover:border-slate-700 relative z-20",
+        className
       )}>
       <div
         key={user.id}
-        className="p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300 text-center text-white">
+        className="p-4 rounded-lg shadow-md hover:shadow-lg transition duration-300">
         <img
           src={user.avatar}
           alt={`${user.first_name} ${user.last_name}`}
@@ -249,6 +329,12 @@ export const Card = ({
           Available: {user.available ? "Yes" : "No"}
         </p>
       </div>
+
+      <button
+        className="bottom-0 right-0 p-2 px-4 scale-105 font-semibold bg-black text-white rounded-md "
+        onClick={() => onSelect(user.id)}>
+        Select
+      </button>
     </div>
   );
 };
