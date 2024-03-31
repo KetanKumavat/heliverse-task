@@ -3,71 +3,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import userData from "../../../public/users.json";
 
-// export const HoverEffect = ({ className }: { className?: string }) => {
-//   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-//   const [currentPage, setCurrentPage] = useState(1);
-//   const usersPerPage = 20;
-
-//   const indexOfLastUser = currentPage * usersPerPage;
-//   const indexOfFirstUser = indexOfLastUser - usersPerPage;
-//   const currentUsers = userData.slice(indexOfFirstUser, indexOfLastUser);
-
-//   const totalPages = Math.ceil(userData.length / usersPerPage);
-
-//   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-//   return (
-//     <div
-//       className={cn(
-//         "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 py-10",
-//         className
-//       )}>
-//       {currentUsers.map(
-//         (
-//           user,
-//           idx // Map over your user data instead of items
-//         ) => (
-//           <div
-//             key={user.id}
-//             className="relative group block p-2 h-full w-full"
-//             onMouseEnter={() => setHoveredIndex(idx)}
-//             onMouseLeave={() => setHoveredIndex(null)}>
-//             <AnimatePresence>
-//               {hoveredIndex === idx && (
-//                 <motion.span
-//                   className="absolute inset-0 h-full w-full bg-neutral-200 dark:bg-slate-800/[0.8] block rounded-3xl"
-//                   layoutId="hoverBackground"
-//                   initial={{ opacity: 0 }}
-//                   animate={{
-//                     opacity: 1,
-//                     transition: { duration: 0.15 },
-//                   }}
-//                   exit={{
-//                     opacity: 0,
-//                     transition: { duration: 0.15, delay: 0.2 },
-//                   }}
-//                 />
-//               )}
-//             </AnimatePresence>
-//             <Card user={user}>
-//               <CardTitle>
-//                 {user.first_name} {user.last_name}
-//               </CardTitle>
-//               <CardDescription>{user.email}</CardDescription>
-//             </Card>
-//           </div>
-//         )
-//       )}
-//       <div className="">
-//         <Pagination
-//           totalPages={totalPages}
-//           currentPage={currentPage}
-//           paginate={paginate}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
 export const HoverEffect = ({ className }: { className?: string }) => {
   let [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -90,9 +25,14 @@ export const HoverEffect = ({ className }: { className?: string }) => {
 
   Object.keys(filters).forEach((key) => {
     if (filters[key]) {
-      filteredUsers = filteredUsers.filter(
-        (user) => user[key].toLowerCase() === filters[key].toLowerCase()
-      );
+      filteredUsers = filteredUsers.filter((user) => {
+        if (key === "availability") {
+          return filters[key] === "true" ? user.available : !user.available;
+        } else {
+          const userValue = String(user[key]).toLowerCase();
+          return userValue === filters[key].toLowerCase();
+        }
+      });
     }
   });
 
@@ -101,7 +41,7 @@ export const HoverEffect = ({ className }: { className?: string }) => {
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const handleFilterChange = (filterType: string, value: string) => {
+  const handleFilterChange = (filterType: string, value: any) => {
     setFilters({ ...filters, [filterType]: value });
   };
 
@@ -120,12 +60,13 @@ export const HoverEffect = ({ className }: { className?: string }) => {
           onChange={(e) => handleFilterChange("domain", e.target.value)}
           className="border-2 p-2 px-px-3 rounded-md bg-black text-white placeholder-white">
           <option value="">All Domains</option>
-          <option value="Sales">Sales</option>
+          <option value="Business Development">Business Development</option>
           <option value="Finance">Finance</option>
-          <option value="Marketing">Marketing</option>
           <option value="IT">IT</option>
-          <option value="UI Designing">UI Designing</option>
           <option value="Management">Management</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Sales">Sales</option>
+          <option value="UI Designing">UI Designing</option>
         </select>
         <select
           value={filters.gender}
@@ -137,11 +78,12 @@ export const HoverEffect = ({ className }: { className?: string }) => {
         </select>
         <select
           value={filters.availability}
-          onChange={(e) => handleFilterChange("Availability", e.target.value)}
+          onChange={(e) => handleFilterChange("available", e.target.value)}
           className="border-2 px-3 p-2 rounded-md bg-black text-white placeholder-white">
-          <option value="">All Availabilities</option>
-          <option value="Yes">Available</option>
-          <option value="No">Not Available</option>
+          <option value="">Availabilities</option>
+          <option value="">All</option>
+          <option value="true">Available</option>
+          <option value="false">Not Available</option>
         </select>
       </div>
       <div
@@ -268,8 +210,9 @@ export const Card = ({
     last_name: string;
     avatar: string;
     email: string;
-    availability: boolean;
+    available: boolean;
     gender: string;
+    domain: string;
   };
 }) => {
   return (
