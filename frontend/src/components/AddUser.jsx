@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const Adduser = (props) => {
+function Adduser(props) {
   const [userDetails, setUserDetails] = useState({
     id: "",
     firstname: "",
