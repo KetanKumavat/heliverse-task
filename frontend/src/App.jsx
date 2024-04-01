@@ -18,6 +18,7 @@ function App() {
 
   return (
     <Router>
+      <h1 className="font-bold text-3xl md:text-5xl text-white">Users</h1>
       <Routes>
         <Route path="/" element={<HoverEffect />} />
         <Route
@@ -28,7 +29,10 @@ function App() {
         />
 
         <Route path="/teams" element={<Teams setProgress={setProgression} />} />
-        <Route path="/add-user" element={<Adduser setProgress={setProgression} />} />
+        <Route
+          path="/add-user"
+          element={<Adduser setProgress={setProgression} />}
+        />
       </Routes>
     </Router>
   );
