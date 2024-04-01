@@ -67,7 +67,7 @@ export const TeamCreation = ({
 
   const handleCreateTeam = async () => {
     try {
-      const url = `http://localhost:5000/api/team`;
+      const url = `https://heliverse-task.onrender.com/api/team`;
       const response = await axios.post(url, {
         selectedUsers,
       });
@@ -92,7 +92,7 @@ export const TeamCreation = ({
   const getTeam = async () => {
     try {
       props.setProgress(10);
-      const url = `http://localhost:5000/api/team`;
+      const url = `https://heliverse-task.onrender.com/api/team`;
       const response = await axios.get(url, {
         headers: {
           "Content-Type": "application/json",

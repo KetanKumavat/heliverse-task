@@ -20,7 +20,7 @@ export const Adduser = (props) => {
     e.preventDefault();
     try {
       props.setProgress(10);
-      const url = `http://localhost:5000/api/users`;
+      const url = `https://heliverse-task.onrender.com/api/users`;
       const response = await axios.post(url, userDetails, {
         headers: {
           "Content-Type": "application/json",
