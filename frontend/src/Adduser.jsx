@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-function Adduser(props) {
+export default function Adduser() {
   const [userDetails, setUserDetails] = useState({
     id: "",
     firstname: "",
@@ -19,7 +19,6 @@ function Adduser(props) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      props.setProgress(10);
       const url = `https://heliverse-task.onrender.com/api/users`;
       const response = await axios.post(url, userDetails, {
         headers: {
@@ -27,12 +26,12 @@ function Adduser(props) {
         },
       });
       if (response.status === 200) {
-        props.setProgress(100);
+        
         alert("User Created Successfully!");
       }
     } catch (error) {
       alert(error);
-      props.setProgress(100);
+      
     }
   };
 
@@ -185,6 +184,4 @@ function Adduser(props) {
       </form>
     </div>
   );
-};
-
-export default Adduser;
+}
