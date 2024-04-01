@@ -27,7 +27,6 @@ function App() {
             <TeamCreation userData={userData} setShowMenu={setShowMenu} />
           }
         />
-
         <Route path="/teams" element={<Teams setProgress={setProgression} />} />
         <Route
           path="/add-user"
