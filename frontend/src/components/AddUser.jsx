@@ -187,4 +187,4 @@ const Adduser = (props) => {
   );
 };
 
-export { Adduser };
+export default Adduser;

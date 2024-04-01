@@ -5,7 +5,7 @@ import "./App.css";
 import { HoverEffect } from "./components/ui/card-hover-effect";
 import { TeamCreation } from "./components/Teams";
 import { Teams } from "./components/CreateTeam";
-import { Adduser } from "./components/Adduser";
+import  Adduser  from "./components/Adduser";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import userData from "../public/users.json";
 
