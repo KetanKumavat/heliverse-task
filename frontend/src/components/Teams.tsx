@@ -1,7 +1,7 @@
 import { cn } from "../../src/utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import userData from "../../public/users.json";
+import userData from "../../users.json";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 

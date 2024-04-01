@@ -1,7 +1,7 @@
 import { cn } from "../../utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
-import userData from "../../../public/users.json";
+import userData from "../../../users.json";
 import { useNavigate } from "react-router-dom";
 
 export const HoverEffect = ({ className }: { className?: string }) => {

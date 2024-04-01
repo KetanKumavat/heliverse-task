@@ -5,9 +5,9 @@ import "./App.css";
 import { HoverEffect } from "./components/ui/card-hover-effect";
 import { TeamCreation } from "./components/Teams";
 import { Teams } from "./components/CreateTeam";
-import  Adduser  from "./components/Adduser";
+import  Adduser  from "../../frontend/src/components/Adduser.jsx";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import userData from "../public/users.json";
+import userData from "../users.json";
 
 function App() {
   const [showMenu, setShowMenu] = React.useState(false);
