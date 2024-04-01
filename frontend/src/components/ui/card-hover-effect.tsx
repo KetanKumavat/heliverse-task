@@ -95,48 +95,50 @@ export const HoverEffect = ({ className }: { className?: string }) => {
           }}>
           Create Team
         </button>
+        <button
+          className="flex justify-center p-4 rounded-full text-white font-semibold bg-black px-4"
+          onClick={() => {
+            navigate("/add-user");
+          }}>
+          Create User
+        </button>
       </div>
       <div
         className={cn(
           "grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-6 ",
           className
         )}>
-        {currentUsers.map(
-          (
-            user,
-            idx // Map over your user data instead of items
-          ) => (
-            <div
-              key={user.id}
-              className="relative group block p-2 h-full w-full"
-              onMouseEnter={() => setHoveredIndex(idx)}
-              onMouseLeave={() => setHoveredIndex(null)}>
-              <AnimatePresence>
-                {hoveredIndex === idx && (
-                  <motion.span
-                    className="absolute inset-0 h-full w-full bg-white/75 dark:bg-white/75 block rounded-3xl"
-                    layoutId="hoverBackground"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: { duration: 0.15 },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      transition: { duration: 0.15, delay: 0.2 },
-                    }}
-                  />
-                )}
-              </AnimatePresence>
-              <Card user={user}>
-                <CardTitle>
-                  {user.first_name} {user.last_name}
-                </CardTitle>
-                <CardDescription>{user.email}</CardDescription>
-              </Card>
-            </div>
-          )
-        )}
+        {currentUsers.map((user, idx) => (
+          <div
+            key={user.id}
+            className="relative group block p-2 h-full w-full"
+            onMouseEnter={() => setHoveredIndex(idx)}
+            onMouseLeave={() => setHoveredIndex(null)}>
+            <AnimatePresence>
+              {hoveredIndex === idx && (
+                <motion.span
+                  className="absolute inset-0 h-full w-full bg-white/75 dark:bg-white/75 block rounded-3xl"
+                  layoutId="hoverBackground"
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: 1,
+                    transition: { duration: 0.15 },
+                  }}
+                  exit={{
+                    opacity: 0,
+                    transition: { duration: 0.15, delay: 0.2 },
+                  }}
+                />
+              )}
+            </AnimatePresence>
+            <Card user={user}>
+              <CardTitle>
+                {user.first_name} {user.last_name}
+              </CardTitle>
+              <CardDescription>{user.email}</CardDescription>
+            </Card>
+          </div>
+        ))}
       </div>
 
       <Pagination

@@ -1,12 +1,14 @@
 import { cn } from "../../src/utils/cn";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import userData from "../../public/users.json";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export const TeamCreation = ({
   className,
   setShowMenu,
+  props,
 }: {
   className?: string;
   setShowMenu: (value: boolean) => void;
@@ -14,7 +16,7 @@ export const TeamCreation = ({
   const [selectedUsers, setSelectedUsers] = useState<string[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 20;
+  const usersPerPage = 8;
   const [searchTerm, setSearchTerm] = useState("");
 
   const [filters, setFilters] = useState({
@@ -63,17 +65,53 @@ export const TeamCreation = ({
     }
   };
 
-  const handleCreateTeam = () => {
-    // Logic to create team with selected users
-    console.log("Selected Users:", selectedUsers);
-    // Reset selectedUsers array for next team creation
-    setSelectedUsers([]);
-    setShowMenu(true);
+  const handleCreateTeam = async () => {
+    try {
+      const url = `http://localhost:5000/api/team`;
+      const response = await axios.post(url, {
+        selectedUsers,
+      });
+      if (response.status === 201) {
+        console.log("Team created successfully");
+        // Reset selectedUsers array for next team creation
+        setSelectedUsers([]);
+        setShowMenu(true);
+      }
+    } catch (error) {
+      alert("Failed to create team");
+      console.error(error);
+    }
   };
 
   const handleRemoveUser = (userId: string) => {
     setSelectedUsers(selectedUsers.filter((id) => id !== userId));
   };
+
+  const [teams, setTeams] = useState([]);
+
+  const getTeam = async () => {
+    try {
+      props.setProgress(10);
+      const url = `http://localhost:5000/api/team`;
+      const response = await axios.get(url, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.status === 200) {
+        setTeams(response.data.data);
+        props.setProgress(100);
+      }
+    } catch (error) {
+      console.log(error);
+      props.setProgress(100);
+    }
+  };
+
+  useEffect(() => {
+    getTeam();
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <div className={cn("py-10", className)}>
@@ -174,6 +212,21 @@ export const TeamCreation = ({
         currentPage={currentPage}
         paginate={paginate}
       />
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold text-center mb-4">Teams</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {teams.map((team) => (
+            <div key={team.id} className="bg-white p-4 rounded-lg shadow-md">
+              <h3 className="text-xl font-bold">{team.name}</h3>
+              <ul className="mt-2">
+                {team.members.map((member) => (
+                  <li key={member.id}>{member.name}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -292,6 +345,7 @@ export const Card = ({
   className,
   user,
   onSelect,
+  isSelected
 }: {
   className?: string;
   user: {
@@ -333,7 +387,7 @@ export const Card = ({
       <button
         className="bottom-0 right-0 p-2 px-4 scale-105 font-semibold bg-black text-white rounded-md "
         onClick={() => onSelect(user.id)}>
-        Select
+        {isSelected ? "Remove" : "Select"}
       </button>
     </div>
   );
