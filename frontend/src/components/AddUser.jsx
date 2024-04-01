@@ -46,9 +46,9 @@ export const Adduser = (props) => {
     <div className="flex flex-col gap-5 border rounded-xl justify-center mt-[25vh] p-8">
       <h1>Add </h1>
       <button
-        className="bg-blue-500 text-white rounded-2xl px-4 p-2 font-semibold mt-3"
+        className="bg-black text-white rounded-full px-2 p-3 font-semibold mt-3"
         onClick={() => {
-          navigate.push("/");
+          navigate("/");
         }}>
         Home
       </button>
