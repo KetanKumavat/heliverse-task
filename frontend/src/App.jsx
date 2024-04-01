@@ -5,7 +5,7 @@ import "./App.css";
 import { HoverEffect } from "./components/ui/card-hover-effect";
 import { TeamCreation } from "./components/Teams";
 import { Teams } from "./components/CreateTeam";
-import { AddUser } from "./components/AddUser";
+import { Adduser } from "./components/Adduser";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import userData from "../public/users.json";
 
@@ -26,11 +26,9 @@ function App() {
             <TeamCreation userData={userData} setShowMenu={setShowMenu} />
           }
         />
+
         <Route path="/teams" element={<Teams setProgress={setProgression} />} />
-        <Route
-          path="/add-user"
-          element={<AddUser setProgress={setProgression} />}
-        />
+        <Route path="/add-user" element={<Adduser setProgress={setProgression} />} />
       </Routes>
     </Router>
   );
